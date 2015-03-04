@@ -1,0 +1,45 @@
+//#include "runtime.h"
+
+#include <stdio.h>
+#include <stdlib.h>
+
+
+/*  MLUnit */
+typedef struct MLunit{int val = 0; }MLunit;
+void MLunitprint(MLunit u){printf("() \n");}
+int MLunitAccess(MLunit u){return u.val;}
+
+/*  MLBool */
+typedef struct MLbool{int val = 1;}MLbool;
+void MLboolInit(MLbool u,int bool){u.val=bool;}
+void MLboolprint(MLbool u){
+	if(u.val)
+		printf("true \n");
+	else printf("false \n");
+	}
+int MLboolAccess(MLbool u){return u.val;}
+
+/*  MLInt */
+typedef struct MLint{int val;}MLint;
+void MLintInit(MLint u,int bool){u.val=bool;}
+void MLintprint(MLint u){
+	printf("%d \n",u.val);
+	}
+int MLintAccess(MLint u){return u.val;}
+
+/*  MLInt */
+typedef struct MLint{int val;}MLint;
+void MLintInit(MLint u,int bool){u.val=bool;}
+void MLintprint(MLint u){
+	printf("%d \n",u.val);
+	}
+int MLintAccess(MLint u){return u.val;}
+
+
+
+struct MLruntime {// on y fout les MLValue en tout genre
+	
+	
+	
+	
+	}
