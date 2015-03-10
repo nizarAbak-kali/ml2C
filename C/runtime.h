@@ -42,10 +42,10 @@ typedef struct MLvalue {
     MLint i;
     // un MLdouble
     MLdouble d;
-		//un MLstring
-		MLstring s;
+	//un MLstring
+	MLstring s;
     // un MLpair
-    MLpair p;
+    MLPair p;
     //MLlist
     MLlist l;
     //MLfun
@@ -96,4 +96,4 @@ MLvalue MLvalueAccess(MLvalue v);
 //	PAIR
 void MLPairInit(MLPair p, MLvalue a , MLvalue b);
 void MLPairprint(MLPair p);
-pair MLPairAccess(MLPair u){
+MLvalue* MLPairAccess(MLPair u);
