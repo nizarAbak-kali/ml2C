@@ -26,21 +26,21 @@ open Typeur;;
 
 
 
-let initial_typing_env = 
-ref(  let mk_type (ct1,ct2,ct3) = 
+let initial_typing_env =
+ref(  let mk_type (ct1,ct2,ct3) =
     Forall([], Fun_type (Pair_type(Const_type ct1, Const_type ct2),Const_type ct3))
-  in 
+  in
     let int_ftype = mk_type(Int_type,Int_type,Int_type)
     and float_ftype = mk_type(Float_type,Float_type,Float_type)
     and int_predtype = mk_type(Int_type,Int_type,Bool_type)
     and float_predtype = mk_type(Float_type,Float_type,Bool_type)
     and alpha = Var_type(ref(Unknown 1))
     and beta = Var_type(ref(Unknown 2))
-    in 
-      ("=",Forall([1],Fun_type (Pair_type (alpha,alpha), 
-                                Const_type Bool_type)))::   
+    in
+      ("=",Forall([1],Fun_type (Pair_type (alpha,alpha),
+                                Const_type Bool_type)))::
       ("true", Forall([],Const_type Bool_type)) ::
-      ("false", Forall([],Const_type Bool_type)) ::     
+      ("false", Forall([],Const_type Bool_type)) ::
       (map (function s -> (s,int_ftype)) ["*";"+";"-";"/"]) @
       (map (function s -> (s,float_ftype)) ["*.";"+.";"-.";"/."]) @
       (map (function s -> (s,int_predtype)) ["<";">";"<=";">="]) @
@@ -56,20 +56,20 @@ ref(  let mk_type (ct1,ct2,ct3) =
 ])
 ;;
 
-let add_initial_typing_env (name,typ) = 
+let add_initial_typing_env (name,typ) =
     initial_typing_env := (name,typ) :: (!initial_typing_env)
 ;;
 
-let type_check e = 
-  let et = typing_handler type_expr !initial_typing_env e 
-  in 
-    let t =  acces_type et in 
+let type_check e =
+  let et = typing_handler type_expr !initial_typing_env e
+  in
+    let t =  acces_type et in
     let qt = snd ( List.hd (
-          if is_expansive e 
-          then ["_zztop",Forall([],t)] 
+          if is_expansive e
+          then ["_zztop",Forall([],t)]
           else generalize_types !initial_typing_env ["_zztop",t]
           ))
-    in 
+    in
       et,qt
 ;;
 
@@ -92,8 +92,9 @@ let parse_phrase parsing_fun lexing_fun lexbuf =
     with Error(_,_,_) ->
       skip() in
   let skip_maybe () =
+  (*commentaire nizar : je modifie le or par un || *)
     if Parsing.is_current_lookahead EOF
-    or Parsing.is_current_lookahead SEMISEMI
+    || Parsing.is_current_lookahead SEMISEMI
     then () else skip() in
 
 
@@ -109,14 +110,14 @@ let parse_phrase parsing_fun lexing_fun lexbuf =
          let l = (pos1, pos2) in
          begin match errcode with
            Illegal_character ->
-             eprintf "Illegal character.\n" 
+             eprintf "Illegal character.\n"
          | Unterminated_comment ->
-             eprintf "Comment not terminated.\n" 
+             eprintf "Comment not terminated.\n"
          | Bad_char_constant ->
              eprintf "Ill-formed character literal.\n"
          | Unterminated_string ->
              eprintf "String literal not terminated.\n"
-         
+
          end;
          skip();
          raise Toplevel
