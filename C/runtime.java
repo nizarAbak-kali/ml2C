@@ -1,12 +1,12 @@
 
 
 abstract class MLvalue extends Object {
-  
+
   abstract void  print();
 }
 
 class MLunit extends MLvalue
-{ 
+{
   private int val;
 
   MLunit(){val=0;}
@@ -17,18 +17,18 @@ class MLunit extends MLvalue
 
 
 class MLbool extends MLvalue
-{ 
+{
   private boolean val;
 
   MLbool(boolean a){val=a;}
 
-  public void print(){if (val) System.out.print("true"); 
+  public void print(){if (val) System.out.print("true");
                       else System.out.print("false");}
   public boolean MLaccess(){return val;}
 }
 
 class MLint extends MLvalue
-{  
+{
    private int val;
    MLint(int a){val=a;}
 
@@ -114,7 +114,7 @@ abstract class MLfun extends MLvalue
 
 }
 
-class MLprimitive extends MLfun { 
+class MLprimitive extends MLfun {
 
   String name="";
 
@@ -126,7 +126,7 @@ class MLprimitive extends MLfun {
     else if (name.equals("fst")) return MLruntime.MLfst_real((MLpair)l);
     else if (name.equals("snd")) return MLruntime.MLsnd_real((MLpair)l);
     else {System.err.println("Unknown primitive "+name); return l;}
-  } 
+  }
 
 }
 
@@ -185,7 +185,7 @@ class MLruntime {
         return new MLlist(x,y);
   }
 
-// 
+//
   public static MLvalue MLconcat(MLstring x, MLstring y) {
         return new MLstring(x.MLaccess()+y.MLaccess());
   }
@@ -211,15 +211,12 @@ class MLruntime {
   public static MLvalue MLtl_real(MLlist l) {
       return l.MLaccess2();
   }
- 
-  
+
+
 // la fonction d'affichage
-  public static MLvalue MLprint(MLvalue x) { 
-     x.print(); 
+  public static MLvalue MLprint(MLvalue x) {
+     x.print();
      System.out.println();
      return MLlrp;}
 
 }
-
-
-

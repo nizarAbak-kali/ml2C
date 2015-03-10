@@ -1,44 +1,99 @@
-//#include "runtime.h"
+#include "runtime.h"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-typedef char* string ;
 
+
+/*  MLunit  */
+
+void MLunitInit(MLunit u){
+  u = malloc(sizeof(*u));
+  u->val = 0;
+}
+void MLunitprint(MLunit u){
+  printf("() \n");
+}
+int MLunitAccess(MLunit u){
+  return u->val;
+}
+
+
+/*  MLBool */
+void MLboolInit(MLbool u,int bool){
+  u = malloc(sizeof(*u));
+  u->val=bool;
+}
+void MLboolprint(MLbool u){
+  if(u->val)
+    printf("true \n");
+  else printf("false \n");
+}
+int MLboolAccess(MLbool u){
+  return u->val;
+}
+
+/*  MLint */
+void MLintInit(MLint u,int bool){
+  u = malloc(sizeof(*u));
+  u->val=bool;
+}
+void MLintprint(MLint u){
+  printf("%d \n",u->val);
+}
+int MLintAccess(MLint u){
+  return u->val;
+}
+
+/*  MLdouble */
+void MLdoubleInit(MLdouble u , double bool){
+  u = malloc(sizeof(*u));
+  u->val = bool;
+}
+void MLdoubleprint(MLdouble u){
+  printf("%f \n",u->val);
+}
+double MLdoubleAccess(MLdouble u){
+  return u->val;
+}
+
+/*  MLstring */
+void MLstringInit(MLstring u , string s){
+  if(s && (!u)){// si s est non null et u pas encore
+    u = malloc(sizeof(*u));
+    u->val = malloc(strlen(s)*sizeof(*(u->val)));
+    memcpy(s,u->val,sizeof(*u->val));
+  }
+  else printf("pb au niveau de Mlstring");
+}
+
+void MLstringprint(MLstring u){
+  printf("%s \n",u->val);
+}
+string MLstringAccess(MLstring u){
+  return u->val;
+}
 
 /*   MLvalue  */
-
-typedef struct MLvalue {
-  const char type[20];//un tag pour savoir quelle type il en question
-  union union_ML{
-    MLunit u;
-    MLbool b;
-    MLint i;
-    MLdouble d;
-    MLpair p;
-    MLlist l;
-  }
-    MLfun f;
-} *MLValue;
 //je sais pas si je dois init cette merde de union
-void MLvalueInit(MLvalue v,const string s){
+void MLvalueInit(MLvalue v,const char* s){
   v = malloc(sizeof(*v));
-  v->type = s;
+  memcpy(v->type,s,20);
   if(v){
       switch(v->type){
       case "int":
-	MLintInit(v->un3);
+	     MLintInit(v->i);
       break;
       case "unit":
 	MLunitInit(v->u);
 	break;
+	MLdoubleInit(v->d);
       case "bool":
 	MLboolInit(v->b);
 	break;
 	//j''ai pas mis de pair pour unraison simple pair a deux
       case "double":
-	MLdoubleInit(v->d);
 	break;
+      case "string":
+      MLstringInit(v->s);
+      break;
       case "list":// a faire ....
 	MLlistInit(v->l);
 	break;
@@ -52,9 +107,7 @@ void MLvalueInit(MLvalue v,const string s){
   }
 }
 
-
-
-void MLvalueprint(Mlvalue v){
+void MLvalueprint(MLvalue v){
   if(v){
     switch(v->type){
     case "int":
@@ -70,6 +123,9 @@ void MLvalueprint(Mlvalue v){
     case "double":
       MLdoubleprint(v->d);
       break;
+      case "string":
+      MLstringprint(v->s);
+      break;
     case "list":// a faire ....
       MLlistprint(v->l);
       break;
@@ -82,98 +138,44 @@ void MLvalueprint(Mlvalue v){
     }
 }
 
+MLvalue MLvalueAccess(MLvalue v){
+
+  if(v){
+    switch(v->type){
+    case "int":
+      int i ;
+      MLintAccess(v->i);
+      break;
+    case "unit":
+      MLunitAccess(v->u);
+      break;
+    case "bool":
+      MLboolAccess(v->b);
+      break;
+      //j''ai pas mis de pair pour unraison simple pair a deux
+    case "double":
+      MLdoubleAccess(v->d);
+      break;
+      case "string":
+      MLstringAccess(v->s);
+      break;
+    /*case "list":// a faire ....
+      MLlistAccess(v->l);
+      break;
+    case "fun" //aussi a faire
+      MLfunAcess(v->f);
+      */
+    default:
+      printf("MLvalueprint:types nom connue");
+      exit(0);
+      break;
+    }
+}
 
 
-/*  MLUnit */
-typedef struct MLunit{
-  int val ;
-} *MLunit;
-
-void MLunitInit(MLunit u){
-  u = malloc(sizeof(*u));
-  u->val = 0;
-}
-void MLunitprint(MLunit u){
-  printf("() \n");
-}
-int MLunitAccess(MLunit u){
-  return u->val;
-}
-
-/*  MLBool */
-typedef struct MLbool{
-  int val;
-}* MLbool;
-void MLboolInit(MLbool u,int bool){
-  u = malloc(sizeof(*u));
-  u->val=bool;
-}
-void MLboolprint(MLbool u){
-  if(u->val)
-    printf("true \n");
-  else printf("false \n");
-}
-int MLboolAccess(MLbool u){
-  return u->val;
-}
-
-/*  MLInt */
-typedef struct MLint{
-  int val;
-}* MLint;
-void MLintInit(MLint u,int bool){
-  u = malloc(sizeof(*u));
-  u->val=bool;
-}
-void MLintprint(MLint u){
-  printf("%d \n",u->val);
-}
-int MLintAccess(MLint u){
-  return u->val;
-}
-
-/*  MLDouble */
-typedef struct MLdouble{
-  double val;
-}* MLdouble;
-void MLdoubleInit(MLdouble u , double bool){
-  u = malloc(sizeof(*u));
-  u->val = bool;
-}
-void MLdoubleprint(MLdouble u){
-  printf("%f \n",u->val);
-}
-double MLdoubleAccess(MLdouble u){
-  return u->val;
-}
-
-/*  MLString */
-typedef struct MLString{
-  string val;
-}* MLString;
-void MLStringInit(MLString u , String s){
-  if(s && (!u)){// si s est non null et u pas encore
-  u = malloc(sizeof(*u));
-  u->val = malloc(strlen(s)*sizeof(*(u->val)));
-  memcpy(s,);
-  }
-  else printf("pb au niveau de Mlstring");
-}
-
-void MLStringprint(MLString u){
-  printf("%f \n",u->val);
-}
-string MLStringAccess(MLString u){
-  return u->val;
-}
 
 /*  MLPair */
-typedef struct MLPair{
-  MLValue MLfst;
-  MLValue MLsnd;
-}* MLPair;
-
-void MLPairInit(MLPair p, Mlvalue a , MLvalue b){
+void MLPairInit(MLPair p, MLvalue a , MLvalue b){
   // on alloue de la memoire pour les deux MLvalue
   if(a&&b){
     p = malloc(sizeof(*p));
@@ -184,14 +186,14 @@ void MLPairInit(MLPair p, Mlvalue a , MLvalue b){
 void MLPairprint(MLPair p){
   // on ne connait pas le type de ce qui doit etre printer
   if(p){
-    printf("value : \( \n");
+    printf("value : (  \n");
     MLvalueprint(p->MLfst);
     MLvalueprint(p->MLsnd);
-    printf("value : \) \n");
+    printf("value : (  \n");
   }
   else print("MLPairPrint error")
 }
-pair MLPairAccess(MLPair u){
+pai MLPairAccess(MLPair u){
   return u->val;
 }
 
@@ -199,9 +201,8 @@ pair MLPairAccess(MLPair u){
 
 
 
-
 /*
-struct MLruntime {// on y fout les MLValue en tout
+struct MLruntime {// on y fout les MLvalue en tout
 };
 */
 
