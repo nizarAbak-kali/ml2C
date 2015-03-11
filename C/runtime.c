@@ -3,7 +3,6 @@
 
 
 /*  MLunit  */
-
 void MLunitInit(MLunit u){
     u = malloc(sizeof(*u));
     u->val = 0;
@@ -23,7 +22,7 @@ void MLboolInit(MLbool u,int bool){
 }
 void MLboolprint(MLbool u){
     if(u->val)
-    printf("true \n");
+        printf("true \n");
     else printf("false \n");
 }
 int MLboolAccess(MLbool u){
@@ -76,151 +75,167 @@ void MLvalueInit(MLvalue v,const char* s,MLvalue init){
     v = malloc(sizeof(*v));
     memcpy(v->type,s,20);
     if(v){
-        // a modifier par une suite de if else
-        /*switch(v->type){
-        case "int":
+        if(strcmp(v->type,"unit") == 0){
+            MLunitInit(v->u,init->u);
+        }
+        if(strcmp(v->type,"int") == 0){
+            MLintInit(v->i,init->i);
+        }
+        if(strcmp(v->type,"bool") == 0){
+            MLboolInit(v->b,init->b);
+        }
+        if(strcmp(v->type,"double") == 0){
+            MLdoubleInit(v->d,init->d);
+        }
+        if(strcmp(v->type,"string") == 0){
+            MLstringInit(v->i,init->s);
+        }
+        if(strcmp(v->type,"pair") == 0){
+            MLpairInit(v->p,init->p);
+        }
+        if(strcmp(v->type,"list") == 0){
+            MLlistInit(v->l,init->l);
+        }
+        if(strcmp(v->type,"fun") == 0){
+            MLfunInit(v->f,init->f);
+        }
 
-        break;
-        case "unit":
-        MLunitInit(v->u);
-        break;
-        MLdoubleInit(v->d);
-        case "bool":
-        MLboolInit(v->b);
-        break;
-        //j''ai pas mis de pair pour unraison simple pair a deux
-        case "double":
-        break;
-        case "string":
-        MLstringInit(v->s);
-        break;
-        case "list":// a faire ....
-        MLlistInit(v->l);
-        break;
-        case "fun" //aussi a faire
-        MLfunInit(v-f);
-
-        default
-        printf("MLvalueprint:types nom connue");
-        break;
-    }*/
-    if(strcmp(v->type,"unit") == 0){
-        MLunitInit(v->u,init->u);
     }
-    if(strcmp(v->type,"int") == 0){
-        MLintInit(v->i,init->i);
-    }
-    if(strcmp(v->type,"bool") == 0){
-        MLboolInit(v->b,init->b);
-    }
-    if(strcmp(v->type,"double") == 0){
-        MLdoubleInit(v->d,init->d);
-    }
-    if(strcmp(v->type,"string") == 0){
-        MLstringInit(v->i,init->i);
-    }
-}
 }
 
 void MLvalueprint(MLvalue v){
     if(v){
-        switch(v->type){
-            case "int":
-            MLintprint(v->i);
-            break;
-            case "unit":
+        if(strcmp(v->type,"unit") == 0){
             MLunitprint(v->u);
-            break;
-            case "bool":
+        }
+        if(strcmp(v->type,"int") == 0){
+            MLintprint(v->i);
+        }
+        if(strcmp(v->type,"bool") == 0){
             MLboolprint(v->b);
-            break;
-            //j''ai pas mis de pair pour unraison simple pair a deux
-            case "double":
+        }
+        if(strcmp(v->type,"double") == 0){
             MLdoubleprint(v->d);
-            break;
-            case "string":
-            MLstringprint(v->s);
-            break;
-            case "list":// a faire ....
+        }
+        if(strcmp(v->type,"string") == 0){
+            MLstringprint(v->i);
+        }
+        if(strcmp(v->type,"pair") == 0){
+            MLpairprint(v->p);
+        }
+        //  FAIRE LES LISTES et les FUN ET LES PRIMITIVES
+        if(strcmp(v->type,"list") == 0){
             MLlistprint(v->l);
-            break;
-            case "fun" //aussi a faire
-            MLfunprint(v-f);
-
-            default:
-            printf("MLvalueprint:types nom connue");
-            break;
+        }
+        if(strcmp(v->type,"fun") == 0){
+            MLfunprint(v->f);
         }
     }
+}
 
-    MLvalue MLvalueAccess(MLvalue v){
-
-        if(v){
-            switch(v->type){
-                case "int":
-                int i ;
-                MLintAccess(v->i);
-                break;
-                case "unit":
-                MLunitAccess(v->u);
-                break;
-                case "bool":
-                MLboolAccess(v->b);
-                break;
-                //j''ai pas mis de pair pour unraison simple pair a deux
-                case "double":
-                MLdoubleAccess(v->d);
-                break;
-                case "string":
-                MLstringAccess(v->s);
-                break;
-                /*case "list":// a faire ....
-                MLlistAccess(v->l);
-                break;
-                case "fun" //aussi a faire
-                MLfunAcess(v->f);
-                */
-                default:
-                printf("MLvalueprint:types nom connue");
-                exit(0);
-                break;
-            }
+MLvalue MLvalueAccess(MLvalue v){
+    MLvalue ret ; 
+    if(v){
+        if(strcmp(v->type,"unit") == 0){
+            MLunitAccess(v->u);
         }
-    }
-
-
-    /*  MLPair */
-    void MLPairInit(MLPair p, MLvalue a , MLvalue b){
-        // on alloue de la memoire pour les deux MLvalue
-        if(a&&b){
-            p = malloc(sizeof(*p));
-            *p->MLfst = *a;
-            *p->MLsnd = *b;
+        if(strcmp(v->type,"int") == 0){
+            MLintAccess(v->i);
         }
+        if(strcmp(v->type,"bool") == 0){
+            MLboolAccess(v->b);
+        }
+        if(strcmp(v->type,"double") == 0){
+            MLdoubleAccess(v->d);
+        }
+        if(strcmp(v->type,"string") == 0){
+            MLstringAccess(v->i);
+        }
+        if(strcmp(v->type,"pair") == 0){
+            MLpairAccess(v->p);
+        }
+        //  FAIRE LES LISTES et les FUN ET LES PRIMITIVES
+        if(strcmp(v->type,"list") == 0){
+            MLlistAccess(v->l);
+        }
+        if(strcmp(v->type,"fun") == 0){
+            MLfunprint(v->f);
+        }   
     }
-    void MLPairprint(MLPair p){
+}
+
+
+/*  MLPair */
+void MLpairInit(MLpair p, MLvalue a , MLvalue b){
+            // on alloue de la memoire pour les deux MLvalue
+    if(a&&b){
+        p = malloc(sizeof(*p));
+        *p->MLfst = *a;
+        *p->MLsnd = *b;
+    }
+}
+
+void MLpairprint(MLpair p){
         // on ne connait pas le type de ce qui doit etre printer
-        if(p){
-            printf("value : (  \n");
-            MLvalueprint(p->MLfst);
-            MLvalueprint(p->MLsnd);
-            printf("value : (  \n");
+    if(p){
+        printf("value : (  \n");
+        MLvalueprint(p->MLfst);
+        MLvalueprint(p->MLsnd);
+        printf("value : (  \n");
         }
-        else print("MLPairPrint error")
+    else printf("MLPairPrint error");
+}
+
+MLvalue MLpairAccess1(MLPair u){
+    return u->MLfst;
+}
+MLvalue MLpairAccess2(MLPair u){
+    return u->MLsnd;
+}
+
+/*  MLlist  */
+void MLlistInit(MLlist l, MLvalue a, MLvalue b){
+    l->MLcar = a ;
+    l->MLcdr = b->l ;    
+}
+
+void MLlistprint(MLlist l){
+    if(!l->MLcar){ printf("[]\n");}
+    else{
+        MLvalueprint(l->MLcar);
+        printf("::");
+        MLlistprint(l->MLcdr);
     }
-    MLpair MLPairAccess(MLPair u){
-        return u->val;
-    }
+}
+
+MLvalue MLlistAccess1(MLlist l){
+    return l->MLcar;
+}
+
+MLlist MLlistAccess2(MLlist l){
+    return l->MLcdr;
+}
+
+/*  MLfun ....nous y voila ....*/
+void MLfunInit1(MLfun f){
+    f = malloc(sizeof(*f));
+    f->MLcounter = 0;
+    f->MLenv = null;
+}
+void MLfunInit2(MLfun f,int n){
+    f = malloc(sizeof(*f));
+    f->MLcounter = 0;
+    f->MLenv = malloc(n*sizeof(*(f->MLenv)));
+}
 
 
 
 
-
-    /*
+/*
     struct MLruntime {// on y fout les MLvalue en tout
-};
+
 */
 
-int main(){
-    return 0;
-}
+        int main(){
+            return 0;
+        }

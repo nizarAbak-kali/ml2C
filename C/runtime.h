@@ -35,32 +35,48 @@ typedef struct MLvalue {
   const char type[20];//un tag pour savoir quelle type il en question
     // un pointeur vers:
     // un MLunit
-    MLunit u;
+  MLunit u;
     // un MLbool
-    MLbool b;
+  MLbool b;
     // un MLint
-    MLint i;
+  MLint i;
     // un MLdouble
-    MLdouble d;
+  MLdouble d;
 	//un MLstring
-	MLstring s;
+  MLstring s;
     // un MLpair
-    MLPair p;
+  MLpair p;
     //MLlist
-    MLlist l;
+  MLlist l;
     //MLfun
-    MLfun f;
+  MLfun f;
+
 } *MLvalue;
 
 /*  MLPair */
-typedef struct MLPair{
+typedef struct MLpair{
   MLvalue MLfst;
   MLvalue MLsnd;
 }* MLPair;
 
+/*  MLlist  */
+typedef struct MLlist{
+  MLvalue MLcar;
+  MLlist* MLcdr;
+}* MLlist;
 
+/*  MLfun  */
+typedef struct MLfun{
+  int MLcounter;
+  MLvalue* MLenv;
+}* MLfun;
 
+/*  MLprimitive  extends MLfun  */
+typedef struct MLprimitive{
+  char* name;
+}* MLprimitive;
 
+/*  MLruntime : les fonctions sont dans le .c */
 /******************************************* 	Prototypes */
 
 //	 UNIT
@@ -84,7 +100,7 @@ void MLdoubleprint(MLdouble u);
 double MLdoubleAccess(MLdouble u);
 
 // STRING
-void MLstringInit(MLstring u,string s);
+void MLstringInit(MLstring u,char* s);
 void MLstringprint(MLstring u);
 string MLstringAccess(MLstring u);
 
@@ -94,6 +110,15 @@ void MLvalueprint(MLvalue v);
 MLvalue MLvalueAccess(MLvalue v);
 
 //	PAIR
-void MLPairInit(MLPair p, MLvalue a , MLvalue b);
-void MLPairprint(MLPair p);
-MLvalue* MLPairAccess(MLPair u);
+void MLpairInit(MLPair p, MLvalue a , MLvalue b);
+void MLpairprint(MLPair p);
+MLvalue* MLpairAccess1(MLPair p); // retourne un tab de MLvalue 
+MLvalue* MLpairAccess2(MLPair p);
+
+//  LIST
+void MLlistInit(MLlist l, MLvalue a, MLvalue b);
+void MLlistprint(MLlist l);
+MLvalue MLlistAccess1(MLlist l);
+MLlist MLlistAccess2(MLlist l);
+
+//  FUN
