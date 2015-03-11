@@ -6,15 +6,16 @@
  *                                                                      *
  *                       Compilation -> Langage intermediaire           *
  *                                                                      *
- *                         partie de ml2java                            *
+ *                         partie de ml2C                               *
  *                                                                      *
  ************************************************************************
  *                                                                      *
- *   prodjava.ml  : traducteur LI_instr -> texte Java                   *
+ *   prodjava.ml  : traducteur LI_instr -> texte C                      *
  *                                                                      *
  *   version : 0.1           12/04/06                                   *
  *                                                                      *
- *   auteur : Emmanuel Chailloux                                        *
+ *   auteur : Emmanuel Chailloux                                        * 
+ *   modifié par : NOUIRA Chafik & ABAK-KALI Nizar                      *
  *                                                                      *
  ************************************************************************)
 
@@ -119,13 +120,13 @@ let out_after  (fr,sd,nb) =
 let header_main  s =
   List.iter out
    ["/**\n";
-    " *  "^ s ^ ".java" ^ " engendre par ml2java \n";
+    " *  "^ s ^ ".c" ^ " engendre par ml2C \n";
     " */\n"]
 ;;
 
 let footer_main  s =
   List.iter out
-   ["// fin du fichier " ^ s ^ ".java\n"]
+   ["// fin du fichier " ^ s ^ ".c\n"]
 ;;
 
 let header_one  s =
@@ -149,7 +150,7 @@ let footer_two  s = ();;
 let header_three  s =
   List.iter out
   [  "\n\n";
-     "public static void main(String []args) {\n"]
+     "int main(int argc, char *argv[]) {\n"]
 ;;
 
 let footer_three  s =
@@ -178,9 +179,9 @@ let rec string_of_type typ = match typ with
 
 
 let prod_global_var instr = match instr with
-  VAR (v,t) -> out_start ("static "^"MLvalue "^(*(string_of_type t)*)v^";") 1
+  VAR (v,t) -> out_start ("MLvalue "^(*(string_of_type t)*)v^";") 1
 | FUNCTION (ns,t1,ar,(p,t2), instr) ->
-    out_start ("static MLvalue "(*"fun_"^ns^" "*)^ns^"= new MLfun_"^ns^"("^(string_of_int ar)^");") 1
+    out_start ("MLvalue "(*"fun_"^ns^" "*)^ns^"= new MLfun_"^ns^"("^(string_of_int ar)^");") 1
 | _ -> ()
 ;;
 
@@ -194,10 +195,10 @@ let get_param_type lv =
 
 
 let prod_const c = match c with
-  INT i -> out ("new MLint("^(string_of_int i)^")")
-| FLOAT f -> out ("new MLdouble("^(string_of_float f)^")")
-| BOOL b  -> out ("new MLbool("^(if b then "true" else "false")^")")
-| STRING s -> out ("new MLstring("^"\""^s^"\""^")")
+  INT i -> out ("MLintInit("^(string_of_int i)^")")
+| FLOAT f -> out ("MLdoubleInit("^(string_of_float f)^")")
+| BOOL b  -> out ("MLboolInit("^(if b then "true" else "false")^")")
+| STRING s -> out ("MLstringInit("^"\""^s^"\""^")")
 | EMPTYLIST -> out ("MLruntime.MLnil")
 | UNIT ->      out ("MLruntime.MLlrp")
 ;;
@@ -270,7 +271,7 @@ let fun_header fn cn  =
 
 let prod_invoke cn  ar =
   List.iter out_line
-     ["  public MLvalue invoke(MLvalue MLparam){";
+     ["  MLvalue invoke(MLvalue MLparam){";
       "    if (MLcounter == (MAX-1)) {"
      ];
 
@@ -306,7 +307,7 @@ let prod_fun instr = match instr with
       fun_header ns class_name ;
       out_line ("class "^class_name^" extends MLfun {");
       out_line "";
-      out_line ("  private static int MAX = "^(string_of_int ar)^";") ;
+      out_line ("int MAX = "^(string_of_int ar)^";") ;
       out_line "";
       out_line ("  "^class_name^"() {super();}") ;
       out_line "";
