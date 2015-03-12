@@ -54,28 +54,28 @@ let get_param_type fun_t =  match fun_t with
 ;;
 *)
 
-
+(*Quand le runtime sera finie*)
 initial_special_env :=
  List.map build [
-      "hd","MLruntime.MLhd";
-      "tl","MLruntime.MLtl";
+      "hd","MLruntime.MLhd";(* sera remplacer par un "hd",MLruntimehead() *)
+      "tl","MLruntime.MLtl";(* idem pour le reste *)
       "fst","MLruntime.MLfst";
       "snd","MLruntime.MLsnd"
-];;
+];r
 
 
 initial_trans_env:=
 
 let alpha = max_unknown () in
-[",",("MLruntime.MLpair", Fun_type (Pair_type (alpha,alpha),
+[",",("MLruntime.MLpair", Fun_type (Pair_type (alpha,alpha),(* sera remplacer par un ",",MLruntimeMLpair() *) 
                                     Pair_type (alpha,alpha)))]@
-["::",("MLruntime.MLlist", Fun_type (Pair_type (alpha,alpha),
+["::",("MLruntime.MLlist", Fun_type (Pair_type (alpha,alpha),(* sera remplacer par un "::",MLruntimeMLlist() *)
                                     List_type (alpha)))]@
 
 (
 List.map build
-     ["true" ,"MLruntime.MLtrue";
-      "false","MLruntime.MLfalse";
+     ["true" ,"MLruntime.MLtrue";(* sera remplacer par un "true",MLruntimeMLtrue() *)
+      "false","MLruntime.MLfalse";(*etc ...*)
       "+","MLruntime.MLaddint";
       "-","MLruntime.MLsubint";
       "*","MLruntime.MLmulint";
@@ -175,7 +175,7 @@ let rec string_of_type typ = match typ with
 | PAIRTYPE -> "MLpair "
 | LISTTYPE -> "MLlist "
 | FUNTYPE  -> "MLfun "
-| REFTYPE  -> "MLref "
+| REFTYPE  -> "MLref " (*j'ai pas creer de ref  et je sais pas si je dois*)
 ;;
 
 
@@ -200,7 +200,7 @@ let prod_const c = match c with
 | FLOAT f -> out ("MLdoubleInit("^(string_of_float f)^")")
 | BOOL b  -> out ("MLboolInit("^(if b then "true" else "false")^")")
 | STRING s -> out ("MLstringInit("^"\""^s^"\""^")")
-| EMPTYLIST -> out ("MLruntime.MLnil")
+| EMPTYLIST -> out ("MLruntime.MLnil")(* a faire apres que le runtime est completer*)
 | UNIT ->      out ("MLruntime.MLlrp")
 ;;
 
@@ -220,7 +220,7 @@ let rec prod_instr (fr,sd,nb) instr  = match instr with
                out_after (fr,sd,nb)
              end
 | IF(i1,i2,i3) ->
-              out_start "if (" nb;
+              out_start "if (" nb;(*a modifier par un MLboolAccess()*)
               out ("((MLbool)");
               prod_instr (false,"",nb) i1 ;
               out ")";
