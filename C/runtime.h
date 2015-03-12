@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#define true 1
+#define false 0
+
 
 typedef char* string ;
 
@@ -73,7 +76,12 @@ typedef struct MLfun{
 
 /*  MLprimitive  extends MLfun  */
 typedef struct MLprimitive{
+  //partie herité de par MLfun
+  int MLcounter;
+  MLvalue* MLenv;
+  //partie propre à primitive
   char* name;
+
 }* MLprimitive;
 
 /*  MLruntime : les fonctions sont dans le .c */
@@ -122,3 +130,16 @@ MLvalue MLlistAccess1(MLlist l);
 MLlist MLlistAccess2(MLlist l);
 
 //  FUN
+void MLfunInit1(MLfun f);
+void MLfunInit2(MLfun f,int n);
+void MLfunaddenv(MLfun f,MLvalue* 0_env, MLvalue a);
+void MLfunprint(MLfun f);
+
+// PRIMITIVE
+void MLprimitivefunInit1(MLprimitive p);
+void MLprimitivefunInit2(MLprimitive f,int n);
+void MLprimitivefunaddenv(MLprimitive f,MLvalue* 0_env, MLvalue a);
+void MLprimitivefunprint(MLprimitive f);
+MLvalue invoke(MLprimitive p, MLvalue v);
+
+//  RUNTIME

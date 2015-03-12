@@ -55,19 +55,12 @@ double MLdoubleAccess(MLdouble u){
 
 /*  MLstring */
 void MLstringInit(MLstring u , string s){
-    if(s && (!u)){// si s est non null et u pas encore
+    if(s && (!u)){// si s est non NULL et u pas encore
         u = malloc(sizeof(*u));
         u->val = malloc(strlen(s)*sizeof(*(u->val)));
         memcpy(s,u->val,sizeof(*u->val));
     }
     else printf("pb au niveau de Mlstring");
-}
-
-void MLstringprint(MLstring u){
-    printf("%s \n",u->val);
-}
-string MLstringAccess(MLstring u){
-    return u->val;
 }
 
 /*   MLvalue  */
@@ -93,8 +86,11 @@ void MLvalueInit(MLvalue v,const char* s,MLvalue init){
         if(strcmp(v->type,"pair") == 0){
             MLpairInit(v->p,init->p);
         }
-        if(strcmp(v->type,"list") == 0){
-            MLlistInit(v->l,init->l);
+        if(s
+
+
+    trcmp(v->type,"list") == 0){
+            MLlistInit(v->l,init->l,NULL);
         }
         if(strcmp(v->type,"fun") == 0){
             MLfunInit(v->f,init->f);
@@ -124,7 +120,10 @@ void MLvalueprint(MLvalue v){
             MLpairprint(v->p);
         }
         //  FAIRE LES LISTES et les FUN ET LES PRIMITIVES
-        if(strcmp(v->type,"list") == 0){
+        if(s
+
+
+    trcmp(v->type,"list") == 0){
             MLlistprint(v->l);
         }
         if(strcmp(v->type,"fun") == 0){
@@ -155,7 +154,10 @@ MLvalue MLvalueAccess(MLvalue v){
             MLpairAccess(v->p);
         }
         //  FAIRE LES LISTES et les FUN ET LES PRIMITIVES
-        if(strcmp(v->type,"list") == 0){
+        if(s
+
+
+    trcmp(v->type,"list") == 0){
             MLlistAccess(v->l);
         }
         if(strcmp(v->type,"fun") == 0){
@@ -199,18 +201,24 @@ void MLlistInit(MLlist l, MLvalue a, MLvalue b){
     l->MLcdr = b->l ;    
 }
 
+
 void MLlistprint(MLlist l){
     if(!l->MLcar){ printf("[]\n");}
     else{
         MLvalueprint(l->MLcar);
-        printf("::");
+        
+
+
+printf("::");
         MLlistprint(l->MLcdr);
     }
 }
 
+
 MLvalue MLlistAccess1(MLlist l){
     return l->MLcar;
 }
+
 
 MLlist MLlistAccess2(MLlist l){
     return l->MLcdr;
@@ -220,7 +228,7 @@ MLlist MLlistAccess2(MLlist l){
 void MLfunInit1(MLfun f){
     f = malloc(sizeof(*f));
     f->MLcounter = 0;
-    f->MLenv = null;
+    f->MLenv = NULL;
 }
 void MLfunInit2(MLfun f,int n){
     f = malloc(sizeof(*f));
@@ -228,14 +236,109 @@ void MLfunInit2(MLfun f,int n){
     f->MLenv = malloc(n*sizeof(*(f->MLenv)));
 }
 
+void MLfunaddenv(MLfun f,MLvalue* 0_env, MLvalue a){
+    int i ;
+    for(i=0 ; i < f->MLcounter ;i++){
+        MLenv[i]=0_env[i];
+    }
+    f->MLenv[MLcounter] = a;
+    MLcounter++;
+}
+
+void MLfunprint(MLfun f){
+    int i;
+    printf("<fun> [ \n");
+    for (i = 0; i < f->MLcounter; ++i)
+    {
+        MLvalueprint(f->MLenv[i]);
+    }
+    printf("]\n");
+}
+// pas besoin de creer invoke dans fun 
+
+/*  PRIMITIVES */
+/*  heritage des fonctions de MLfun*/
+void MLprimitivefunInit1(MLprimitive p){
+    f = malloc(sizeof(*f));
+    f->MLcounter = 0;
+    f->MLenv = NULL;
+}
+void MLprimitivefunInit2(MLprimitive f,int n){
+    f = malloc(sizeof(*f));
+    f->MLcounter = 0;
+    f->MLenv = malloc(n*sizeof(*(f->MLenv)));
+}
+
+void MLprimitivefunaddenv(MLprimitive f,MLvalue* 0_env, MLvalue a){
+    int i ;
+    for(i=0 ; i < f->MLcounter ;i++){
+        MLenv[i]=0_env[i];
+    }
+    f->MLenv[MLcounter] = a;
+    MLcounter++;
+}
+
+void MLprimitivefunprint(MLprimitive f){
+    int i;
+    printf("<fun> [ \n");
+    for (i = 0; i < f->MLcounter; ++i)
+    {
+        MLvalueprint(f->MLenv[i]);
+    }
+    printf("]\n");
+}
+//extensions de primitive avec invoke 
+MLvalue invoke(MLprimitive p, MLvalue v){
+    if(strcmp("hd",p->name)==0)return MLruntimeMLhd_real(v->l);
+    else if(strcmp("tl",p->name)==0)return MLruntimeMLtl_real(v->l);
+    else if(strcmp("fst",p->name)==0)return MLruntimeMLfst_real(v->p);
+    else if(strcmp("snd",p->name)==0)return MLruntimeMLsnd_real(v->p);
+    else{fprintf(stderr, "Unknown primitive %s\n",p->name); return v;}
+}
 
 
 
 /*
-    struct MLruntime {// on y fout les MLvalue en tout
-
+struct MLruntime {// on y fout les MLvalue et tout
 */
+/*  LE RUUUUUUUUUUUUUUNTIIIIIIIIIIIME*/
 
-        int main(){
-            return 0;
-        }
+// booleens
+MLbool MLruntimeMLtrue(){
+    MLbool res ;
+    MLboolInit(res,true);
+    return res ;
+}
+MLbool MLruntimeMLfalse(){
+    MLbool res ;
+    MLboolInit(res,false);
+    return res;
+}
+//  unit
+MLunit MLruntimeMLlrp(){
+    MLunit res;
+    MLunitInit(res);
+    return res;
+}
+
+// nil
+MLlist MLruntimeMLnil(){
+    MLvalue res;
+    MLvalue a,b;
+    a = b = NULL;
+    MLlistInit(res,a,b);
+    return res;   
+}
+
+// arithmetique sur les entiers
+MLint MLruntimeMLaddint(MLint x, MLint y){
+    MLint res;
+    MLintInit(MLint res,(int)(x->val+y->val))
+    return res;
+}
+
+
+
+int main(){
+    return 0;
+}
