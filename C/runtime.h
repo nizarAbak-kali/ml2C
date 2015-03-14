@@ -120,8 +120,8 @@ MLvalue MLvalueAccess(MLvalue v);
 //	PAIR
 void MLpairInit(MLPair p, MLvalue a , MLvalue b);
 void MLpairprint(MLPair p);
-MLvalue* MLpairAccess1(MLPair p); // retourne un tab de MLvalue 
-MLvalue* MLpairAccess2(MLPair p);
+MLvalue* MLpairAccess1(MLPair p); // retourne la value 1
+MLvalue* MLpairAccess2(MLPair p); // retourne la value 2
 
 //  LIST
 void MLlistInit(MLlist l, MLvalue a, MLvalue b);
@@ -140,7 +140,8 @@ void MLprimitivefunInit1(MLprimitive p);
 void MLprimitivefunInit2(MLprimitive f,int n);
 void MLprimitivefunaddenv(MLprimitive f,MLvalue* 0_env, MLvalue a);
 void MLprimitivefunprint(MLprimitive f);
-MLvalue invoke(MLprimitive p, MLvalue v);
+void MLprimitiveInit(MLprimitive p,string s);
+MLvalue MLprimitiveinvoke(MLprimitive p, MLvalue v);
 
 //  RUNTIME
 MLbool MLruntimeMLtrue();

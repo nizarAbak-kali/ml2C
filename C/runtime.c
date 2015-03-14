@@ -148,10 +148,10 @@ MLvalue MLvalueAccess(MLvalue v){
             MLstringAccess(v->i);
         }
         if(strcmp(v->type,"pair") == 0){
-            MLpairAccess(v->p);
+            MLpairAccess1(v->p);
         }
         if(strcmp(v->type,"list") == 0){
-            MLlistAccess(v->l);
+            MLlistAccess1(v->l);
         }
         if(strcmp(v->type,"fun") == 0){
             MLfunprint(v->f);
@@ -251,7 +251,7 @@ void MLfunprint(MLfun f){
 
 /*  PRIMITIVES */
 /*  heritage des fonctions de MLfun*/
-void MLprimitivefunInit1(MLprimitive p){
+void MLprimitivefunInit1(MLprimitive f){
     f = malloc(sizeof(*f));
     f->MLcounter = 0;
     f->MLenv = NULL;
@@ -281,7 +281,14 @@ void MLprimitivefunprint(MLprimitive f){
     printf("]\n");
 }
 //extensions de primitive avec invoke 
-MLvalue invoke(MLprimitive p, MLvalue v){
+void MLprimitiveInit(MLprimitive p,string s){
+    p->name = malloc(strlen(s)*sizeof(*p->name));
+    int i ;
+    for(i=0;i<strlen(p->name);i++)
+        p->name[i] = s[i];
+    MLprimitivefunInit1(p);//ou 2
+}
+MLvalue MLprimitiveinvoke(MLprimitive p, MLvalue v){
     if(strcmp("hd",p->name)==0)return MLruntimeMLhd_real(v->l);
     else if(strcmp("tl",p->name)==0)return MLruntimeMLtl_real(v->l);
     else if(strcmp("fst",p->name)==0)return MLruntimeMLfst_real(v->p);
@@ -391,9 +398,11 @@ MLbool MLruntimeMLequal(MLvalue x,MLvalue y){
         }
         if(strcmp(x->type,"pair") == 0){
             MLbool tmp1,tmp2,tmp3;
-            
+            // on compare les deux first 
             tmp1 = MLruntimeMLequal(x->p->MLfst,y->p->MLfst);
+            // on compare les deux snd
             tmp2 = MLruntimeMLequal(x->p->MLsnd,y->p->MLsnd);
+            // on compare le resultat des deux comparaisons precedentes 
             tmp3 = MLruntimeMLequal(tmp2,tmp1);
             
             if(tmp3->val==true)
@@ -401,12 +410,18 @@ MLbool MLruntimeMLequal(MLvalue x,MLvalue y){
             else
                 return bfalse;
         }
-        if(strcmp(v->type,"list") == 0){
-            MLlistAccess(v->l);
+        if(strcmp(x->type,"list") == 0){
+            MLbool tmp1 = MLruntimeMLequal(x->MLcar,y->MLcar);//en temps normal je foutre des MLAccess partout 
+            MLbool tmp2 = MLruntimeMLequal(x->MLcdr,y->MLcdr);// mais la , la flemme 
+            
+            if(MLboolAccess(tmp2)==MLboolAccess(tmp1))
+                return btrue;
+            else 
+                return bfalse;
         }
-        if(strcmp(v->type,"fun") == 0){
-            MLfunprint(v->f);
-        }
+        // if(strcmp(v->type,"fun") == 0){
+        //     MLfunprint(v->f);
+        // }
     }
     else{
         fprintf(stderr,"type_different");
@@ -414,7 +429,110 @@ MLbool MLruntimeMLequal(MLvalue x,MLvalue y){
         return b;
     }
 }
+// inégalites sur les entiers 
+MLbool MLruntimeMLltint(MLint x,MLint y){
+    MLbool b ;
+    if(MLintAccess(x)<MLintAccess(y))
+        MLboolInit(b,true);
+    else 
+        MLboolInit(b,false);
+    return  b;
+}
 
+MLbool MLruntimeMLleint(MLint x,MLint y){
+    MLbool b ;
+    if(MLintAccess(x)<=MLintAccess(y))
+        MLboolInit(b,true);
+    else 
+        MLboolInit(b,false);
+    return  b;
+}
+
+MLbool MLruntimeMLgtint(MLint x,MLint y){
+    MLbool b ;
+    if(MLintAccess(x)>MLintAccess(y))
+        MLboolInit(b,true);
+    else 
+        MLboolInit(b,false);
+    return  b;
+}
+
+MLbool MLruntimeMLgeint(MLint x,MLint y){
+    MLbool b ;
+    if(MLintAccess(x)>=MLintAccess(y))
+        MLboolInit(b,true);
+    else 
+        MLboolInit(b,false);
+    return  b;
+}
+// paire
+MLpair MLruntimeMLpair(MLvalue x,MLvalue y){
+    MLpair p ;
+    MLpairInit(p,x,y);
+    return p;
+}
+// liste
+MLlist MLruntimeMLlist(MLlist x,MLlist y){
+    MLlist l;
+    MLlistInit(l,x,y);
+    return l;
+}
+// concat de string
+MLstring MLruntimeMLconcat(MLstring x, MLstring y){
+    MLstring mls;
+    // on creer une chaine de char 
+    // de la taille size(x)+size(y)
+    string s = malloc(strlen(x->val)+strlen(y->val)*sizeof(*s));
+    // on rempli s avec x 
+    int i;
+    for(i=0;i>strlen(x);i++){
+        s[i]= x->val[i];
+    }
+    //on rempli un peu plus avec y 
+    for(i=strlen(x);i>strlen(y);i++){
+        s[i]= y->val[i];
+    }
+    MLstringInit(mls,s);
+}
+
+//Acces au champs des paires 
+MLprimitive MLruntimeMLfst(MLprimitive p){
+    string s = "fst";
+    MLprimitiveInit(p,s);
+}
+MLvalue MLruntimeMLfst_real(MLpair p){
+    return MLpairAccess1(p);
+}
+MLprimitive MLruntimeMLfst(MLprimitive p){
+    string s = "snd";
+    MLprimitiveInit(p,s);
+}
+MLvalue MLruntimeMLfst_real(MLpair p){
+    return MLpairAccess2(p);
+}
+
+// acces aux champs des listes
+MLprimitive MLruntimeMLhd(MLprimitive p){
+    string s = "hd";
+    MLprimitiveInit(p,s);
+}
+MLvalue MLruntimeMLhd_real(MLlist l){
+    return MLlistAccess1(l);
+}
+MLprimitive MLruntimeMLtl(MLprimitive p){
+    string s = "tl";
+    MLprimitiveInit(p,s);
+}
+MLvalue MLruntimeMLhd_real(MLlist l){
+    return MLlistAccess2(l);
+}
+
+// la fonction d'affichage
+MLunit MLprint(MLvalue x){
+    MLvalueprint(x);
+    printf("\n");
+    return MLruntimeMLlrp();
+}
 int main(){
     return 0;
 }
