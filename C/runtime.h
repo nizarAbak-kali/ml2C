@@ -143,3 +143,14 @@ void MLprimitivefunprint(MLprimitive f);
 MLvalue invoke(MLprimitive p, MLvalue v);
 
 //  RUNTIME
+MLbool MLruntimeMLtrue();
+MLbool MLruntimeMLfalse();
+MLunit MLruntimeMLlrp();
+MLlist MLruntimeMLnil();
+MLint MLruntimeMLaddint(MLint x, MLint y);
+MLint MLruntimeMLsubint(MLint x, MLint y);
+MLint MLruntimeMLmulint(MLint x, MLint y);
+MLint MLruntimeMLdivint(MLint x, MLint y);
+MLbool MLruntimeMLequal(MLvalue x,MLvalue y);
+
+  

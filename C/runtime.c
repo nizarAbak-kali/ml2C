@@ -150,11 +150,7 @@ MLvalue MLvalueAccess(MLvalue v){
         if(strcmp(v->type,"pair") == 0){
             MLpairAccess(v->p);
         }
-        //  FAIRE LES LISTES et les FUN ET LES PRIMITIVES
-        if(s
-
-
-    trcmp(v->type,"list") == 0){
+        if(strcmp(v->type,"list") == 0){
             MLlistAccess(v->l);
         }
         if(strcmp(v->type,"fun") == 0){
@@ -337,18 +333,87 @@ MLint MLruntimeMLsubint(MLint x, MLint y){
     MLint res;
     MLintInit(MLint res,(int)(x->val-y->val));
     return res;
-}MLint MLruntimeMLmulint(MLint x, MLint y){
+}
+MLint MLruntimeMLmulint(MLint x, MLint y){
     MLint res;
     MLintInit(MLint res,(int)(x->val*y->val));
     return res;
-}MLint MLruntimeMLdivint(MLint x, MLint y){
+}
+MLint MLruntimeMLdivint(MLint x, MLint y){
     MLint res;
     MLintInit(MLint res,(int)(x->val/y->val));
     return res;
 }
 
-
-
+//  fonction equals
+MLbool MLruntimeMLequal(MLvalue x,MLvalue y){
+    MLbool btrue ;
+    MLboolInit(btrue,true);
+    MLbool bfalse;
+    MLboolInit(bfalse,false);
+    if(x==y)
+        return btrue;
+    if (strcmp(x->type,y->type)==0){
+        if(strcmp(x->type,"unit") == 0){
+            return btrue;
+        }
+        if(strcmp(x->type,"int") == 0){
+            if(x->i == y->i)
+                return btrue;
+            }
+            else{
+                return bfalse;
+            }
+        }
+        if(strcmp(x->type,"bool") == 0){
+            if(x->b == y->b)
+                return btrue;
+            }
+            else{
+                return bfalse;
+            }
+        }
+        if(strcmp(x->type,"double") == 0){
+            if(x->d == y->d)
+                return btrue;
+            }
+            else{
+                return bfalse;
+            }
+        }
+        if(strcmp(x->type,"string") == 0){
+            if(strcmp(x->s,y->s)==0){
+                return btrue;
+            }
+            else{
+                return bfalse;
+            }
+        }
+        if(strcmp(x->type,"pair") == 0){
+            MLbool tmp1,tmp2,tmp3;
+            
+            tmp1 = MLruntimeMLequal(x->p->MLfst,y->p->MLfst);
+            tmp2 = MLruntimeMLequal(x->p->MLsnd,y->p->MLsnd);
+            tmp3 = MLruntimeMLequal(tmp2,tmp1);
+            
+            if(tmp3->val==true)
+                return btrue;
+            else
+                return bfalse;
+        }
+        if(strcmp(v->type,"list") == 0){
+            MLlistAccess(v->l);
+        }
+        if(strcmp(v->type,"fun") == 0){
+            MLfunprint(v->f);
+        }
+    }
+    else{
+        fprintf(stderr,"type_different");
+        MLboolInit(b,false);
+        return b;
+    }
+}
 
 int main(){
     return 0;
