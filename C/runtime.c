@@ -120,10 +120,7 @@ void MLvalueprint(MLvalue v){
             MLpairprint(v->p);
         }
         //  FAIRE LES LISTES et les FUN ET LES PRIMITIVES
-        if(s
-
-
-    trcmp(v->type,"list") == 0){
+        if(strcmp(v->type,"list") == 0){
             MLlistprint(v->l);
         }
         if(strcmp(v->type,"fun") == 0){
@@ -333,9 +330,23 @@ MLlist MLruntimeMLnil(){
 // arithmetique sur les entiers
 MLint MLruntimeMLaddint(MLint x, MLint y){
     MLint res;
-    MLintInit(MLint res,(int)(x->val+y->val))
+    MLintInit(MLint res,(int)(x->val+y->val));
     return res;
 }
+MLint MLruntimeMLsubint(MLint x, MLint y){
+    MLint res;
+    MLintInit(MLint res,(int)(x->val-y->val));
+    return res;
+}MLint MLruntimeMLmulint(MLint x, MLint y){
+    MLint res;
+    MLintInit(MLint res,(int)(x->val*y->val));
+    return res;
+}MLint MLruntimeMLdivint(MLint x, MLint y){
+    MLint res;
+    MLintInit(MLint res,(int)(x->val/y->val));
+    return res;
+}
+
 
 
 
