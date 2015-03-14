@@ -64,32 +64,29 @@ void MLstringInit(MLstring u , string s){
 }
 
 /*   MLvalue  */
-void MLvalueInit(MLvalue v,const char* s,MLvalue init){
+void MLvalueInit(MLvalue v,const char* s,MLvalue init,MLvalue init2){
     v = malloc(sizeof(*v));
     memcpy(v->type,s,20);
     if(v){
         if(strcmp(v->type,"unit") == 0){
-            MLunitInit(v->u,init->u);
+            MLunitInit(v->u);
         }
         if(strcmp(v->type,"int") == 0){
-            MLintInit(v->i,init->i);
+            MLintInit(v->i,init->i->val);
         }
         if(strcmp(v->type,"bool") == 0){
-            MLboolInit(v->b,init->b);
+            MLboolInit(v->b,init->b->val);
         }
         if(strcmp(v->type,"double") == 0){
-            MLdoubleInit(v->d,init->d);
+            MLdoubleInit(v->d,init->d->val);
         }
         if(strcmp(v->type,"string") == 0){
-            MLstringInit(v->i,init->s);
+            MLstringInit(v->i,init->s->val);
         }
         if(strcmp(v->type,"pair") == 0){
-            MLpairInit(v->p,init->p);
+            MLpairInit(v->p,init,init2);
         }
-        if(s
-
-
-    trcmp(v->type,"list") == 0){
+        if(strcmp(v->type,"list") == 0){
             MLlistInit(v->l,init->l,NULL);
         }
         if(strcmp(v->type,"fun") == 0){
@@ -229,10 +226,10 @@ void MLfunInit2(MLfun f,int n){
     f->MLenv = malloc(n*sizeof(*(f->MLenv)));
 }
 
-void MLfunaddenv(MLfun f,MLvalue* 0_env, MLvalue a){
+void MLfunaddenv(MLfun f,MLvalue* O_env, MLvalue a){
     int i ;
     for(i=0 ; i < f->MLcounter ;i++){
-        MLenv[i]=0_env[i];
+        MLenv[i]=O_env[i];
     }
     f->MLenv[MLcounter] = a;
     MLcounter++;
@@ -262,10 +259,10 @@ void MLprimitivefunInit2(MLprimitive f,int n){
     f->MLenv = malloc(n*sizeof(*(f->MLenv)));
 }
 
-void MLprimitivefunaddenv(MLprimitive f,MLvalue* 0_env, MLvalue a){
+void MLprimitivefunaddenv(MLprimitive f,MLvalue* O_env, MLvalue a){
     int i ;
     for(i=0 ; i < f->MLcounter ;i++){
-        MLenv[i]=0_env[i];
+        MLenv[i]=O_env[i];
     }
     f->MLenv[MLcounter] = a;
     MLcounter++;
@@ -365,7 +362,7 @@ MLbool MLruntimeMLequal(MLvalue x,MLvalue y){
             return btrue;
         }
         if(strcmp(x->type,"int") == 0){
-            if(x->i == y->i)
+            if(x->i == y->i){
                 return btrue;
             }
             else{
@@ -373,7 +370,7 @@ MLbool MLruntimeMLequal(MLvalue x,MLvalue y){
             }
         }
         if(strcmp(x->type,"bool") == 0){
-            if(x->b == y->b)
+            if(x->b == y->b){
                 return btrue;
             }
             else{
@@ -381,7 +378,7 @@ MLbool MLruntimeMLequal(MLvalue x,MLvalue y){
             }
         }
         if(strcmp(x->type,"double") == 0){
-            if(x->d == y->d)
+            if(x->d == y->d){
                 return btrue;
             }
             else{
@@ -503,11 +500,11 @@ MLprimitive MLruntimeMLfst(MLprimitive p){
 MLvalue MLruntimeMLfst_real(MLpair p){
     return MLpairAccess1(p);
 }
-MLprimitive MLruntimeMLfst(MLprimitive p){
+MLprimitive MLruntimeMLsnd(MLprimitive p){
     string s = "snd";
     MLprimitiveInit(p,s);
 }
-MLvalue MLruntimeMLfst_real(MLpair p){
+MLvalue MLruntimeMLsnd_real(MLpair p){
     return MLpairAccess2(p);
 }
 
@@ -523,7 +520,7 @@ MLprimitive MLruntimeMLtl(MLprimitive p){
     string s = "tl";
     MLprimitiveInit(p,s);
 }
-MLvalue MLruntimeMLhd_real(MLlist l){
+MLvalue MLruntimeMLtl_real(MLlist l){
     return MLlistAccess2(l);
 }
 
@@ -533,6 +530,8 @@ MLunit MLprint(MLvalue x){
     printf("\n");
     return MLruntimeMLlrp();
 }
+
+
 int main(){
     return 0;
 }

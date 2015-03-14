@@ -113,7 +113,7 @@ void MLstringprint(MLstring u);
 string MLstringAccess(MLstring u);
 
 // VALUE
-void MLvalueInit(MLvalue v,const char* s);
+void MLvalueInit(MLvalue v,const char* s,MLvalue init,MLvalue init);
 void MLvalueprint(MLvalue v);
 MLvalue MLvalueAccess(MLvalue v);
 
@@ -132,13 +132,13 @@ MLlist MLlistAccess2(MLlist l);
 //  FUN
 void MLfunInit1(MLfun f);
 void MLfunInit2(MLfun f,int n);
-void MLfunaddenv(MLfun f,MLvalue* 0_env, MLvalue a);
+void MLfunaddenv(MLfun f,MLvalue* O_env, MLvalue a);
 void MLfunprint(MLfun f);
 
 // PRIMITIVE
 void MLprimitivefunInit1(MLprimitive p);
 void MLprimitivefunInit2(MLprimitive f,int n);
-void MLprimitivefunaddenv(MLprimitive f,MLvalue* 0_env, MLvalue a);
+void MLprimitivefunaddenv(MLprimitive f,MLvalue* O_env, MLvalue a);
 void MLprimitivefunprint(MLprimitive f);
 void MLprimitiveInit(MLprimitive p,string s);
 MLvalue MLprimitiveinvoke(MLprimitive p, MLvalue v);
@@ -153,5 +153,19 @@ MLint MLruntimeMLsubint(MLint x, MLint y);
 MLint MLruntimeMLmulint(MLint x, MLint y);
 MLint MLruntimeMLdivint(MLint x, MLint y);
 MLbool MLruntimeMLequal(MLvalue x,MLvalue y);
-
-  
+MLbool MLruntimeMLltint(MLint x,MLint y);
+MLbool MLruntimeMLleint(MLint x,MLint y);
+MLbool MLruntimeMLgtint(MLint x,MLint y);
+MLbool MLruntimeMLgeint(MLint x,MLint y);
+MLpair MLruntimeMLpair(MLvalue x,MLvalue y);
+MLlist MLruntimeMLlist(MLlist x,MLlist y);
+MLstring MLruntimeMLconcat(MLstring x, MLstring y);
+MLprimitive MLruntimeMLfst(MLprimitive p);
+MLvalue MLruntimeMLfst_real(MLpair p);
+MLprimitive MLruntimeMLsnd(MLprimitive p);
+MLvalue MLruntimeMLsnd_real(MLpair p);
+MLprimitive MLruntimeMLhd(MLprimitive p);
+MLvalue MLruntimeMLhd_real(MLlist l);
+MLprimitive MLruntimeMLtl(MLprimitive p);
+MLvalue MLruntimeMLtl_real(MLlist l);
+MLunit MLprint(MLvalue x);
